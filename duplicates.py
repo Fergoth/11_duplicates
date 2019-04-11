@@ -6,16 +6,12 @@ def generate_dict_of_files(dirname):
     dict_files = {}
     for (this_dir, _, files) in os.walk(dirname):
         for filename in files:
-            # Перехват ошибок из-за проблем с доступом к файлам в винде
-            try:
-                fullpath = os.path.join(this_dir, filename)
-                file_size = os.path.getsize(fullpath)
-                if (filename, file_size) in dict_files:
-                    dict_files[(filename, file_size)].append(fullpath)
-                else:
-                    dict_files[(filename, file_size)] = [fullpath]
-            except:
-                continue
+            fullpath = os.path.join(this_dir, filename)
+            file_size = os.path.getsize(fullpath)
+            if (filename, file_size) in dict_files:
+                dict_files[(filename, file_size)].append(fullpath)
+            else:
+                dict_files[(filename, file_size)] = [fullpath]
     return dict_files
 
 
