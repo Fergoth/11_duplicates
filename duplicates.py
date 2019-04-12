@@ -1,25 +1,23 @@
 import os
 import sys
+from collections import defaultdict
 
 
 def generate_dict_of_files(dirname):
-    dict_files = {}
+    files_locations = defaultdict(list)
     for (this_dir, _, files) in os.walk(dirname):
         for filename in files:
-            fullpath = os.path.join(this_dir, filename)
-            file_size = os.path.getsize(fullpath)
-            if (filename, file_size) in dict_files:
-                dict_files[(filename, file_size)].append(fullpath)
-            else:
-                dict_files[(filename, file_size)] = [fullpath]
-    return dict_files
+            full_path = os.path.join(this_dir, filename)
+            file_size = os.path.getsize(full_path)
+            files_locations[(filename, file_size)].append(full_path)
+    return files_locations
 
 
 def print_similar_files(dict_files):
-    for key in dict_files:
-        if len(dict_files[key]) > 1:
-            print('{} {}'.format(key[0], key[1]))
-            for path in dict_files[key]:
+    for (filename, file_size), paths in dict_files.items():
+        if len(paths) > 1:
+            print('{} {}'.format(filename, file_size))
+            for path in paths:
                 print(path)
             print('_' * 40)
 
@@ -29,7 +27,7 @@ if __name__ == '__main__':
         root = sys.argv[1]
     else:
         sys.exit('Введите стартовую директорию')
-    if os.path.exists(root):
+    if os.path.isdir(root):
         print_similar_files(generate_dict_of_files(root))
     else:
         print('Директория не найдена')
